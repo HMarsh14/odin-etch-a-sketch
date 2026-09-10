@@ -1,12 +1,6 @@
 // Grab the container element from the html
 const container = document.querySelector("#container");
-
-// Define the grid size
-const gridSize = 16;
-const totalSquares = gridSize * gridSize;
-
-// Calculate the exact size each sqaure should be
-const squareSize = 960 / gridSize;
+const resizeBtn = document.querySelector("#resize-btn");
 
 // Helper function: Generates a completely random RGB color string
 function getRandomColor() {
@@ -16,24 +10,52 @@ function getRandomColor() {
     return `rgb(${r},${g},${b})`;
 }
 
-// Loop to create and append the grid squares
-for (let i = 0; i < totalSquares; i++) {
-    const square = document.createElement("div");
+// Reusable function to build the grid dynamically based on 'size' input
+function createGrid(gridSize) {
+    // Clear existing grid squares
+    container.innerHTML = "";
 
-    // Add the class for styling
-    square.classList.add("grid-item");
+    // Calculate the total squares and the size for each square
+    const totalSquares = gridSize * gridSize;
+    const squareSize = 960 / gridSize;
 
-    // Set square height and width
-    square.style.width = `${squareSize}px`;
-    square.style.height = `${squareSize}px`;
+    // Loop to create and append the grid squares
+    for (let i = 0; i < totalSquares; i++) {
+        const square = document.createElement("div");
 
-    // Hover event listener to change squares to a random color
-    square.addEventListener("mouseenter", () => {
-        square.style.backgroundColor = getRandomColor();
-    });
+        // Add the class for styling
+        square.classList.add("grid-item");
 
-    // Append the square into the grid container
-    container.appendChild(square);
+        // Set square height and width
+        square.style.width = `${squareSize}px`;
+        square.style.height = `${squareSize}px`;
+
+        // Hover event listener to change squares to a random color
+        square.addEventListener("mouseenter", () => {
+            square.style.backgroundColor = getRandomColor();
+        });
+
+        // Append the square into the grid container
+        container.appendChild(square);
+    }
 }
 
-console.log(`Successfully created a ${gridSize}x${gridSize} grid!`);
+// Event listener for the resize button
+resizeBtn.addEventListener("click", () => {
+    // Prompt the user for input and convert it to an integer number
+    let userInput = prompt(
+        "Enter the number of squares per side (Maximum 100): ",
+    );
+    let size = parseInt(userInput);
+
+    // Validate the input (Check if it's a valid number between 1 and 100)
+    if (isNaN(size) || size < 1 || size > 100) {
+        alert("Please enter a valid number between 1 and 100.");
+    } else {
+        // Re-generate the grid with the new size
+        createGrid(size);
+    }
+});
+
+// Initialiise the default 16x16 grid when the page first loads
+createGrid(16);
